@@ -1,0 +1,8 @@
+name 'lfisher47-accounts'
+version '0.0.1'
+author 'lfisher47'
+summary 'Accounts config STIG rule enforcement'
+description 'Accounts config STIG rule enforcement'
+license 'GNU GPL 2.0'
+source 'git://github.com/lfisher47/puppet-accounts'
+project_page 'https://github.com/lfisher47/puppet-accounts'
