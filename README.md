@@ -5,6 +5,20 @@ This modules was copied from https://git.fedorahosted.org/cgit/aqueduct.git/tree
 
 ===
 
+# STIG Rules
+
+This module addresses:
+* RHEL-06-000027/SV-50293r1_rule
+* RHEL-06-000028/SV-50295r1_rule
+* RHEL-06-000029/SV-50297r2_rule
+* RHEL-06-000342/SV-50452r1_rule
+* RHEL-06-000343/SV-05450r1_rule
+* RHEL-06-000344/SV-05448r1_rule
+* RHEL-06-000345/SV-50446r1_rule
+* RHEL-06-000032/SV-50301r1_rule - Verify only
+
+===
+
 # Compatibility
 
 Compatible with the following platforms.
