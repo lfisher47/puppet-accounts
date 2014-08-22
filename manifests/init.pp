@@ -20,7 +20,9 @@
 # Dependencies:
 #  None
 ############################################################
-class accounts {
+class accounts (
+ $umask = '0027'
+){
   #RHEL-06-000027, RHEL-06-000028
   augeas { 'Restrict Virtual Console and Serial Port Root Logins':
     context => '/files/etc/securetty',
@@ -34,23 +36,23 @@ class accounts {
 
   #RHEL-06-000342
   exec { 'Ensure the Default Bash Umask is Set Correctly':
-    command => "/bin/sed -i -r 's/(umask)([ \t]*)[0-9]+/umask 077/gi' /etc/bashrc",
-    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/bashrc | /bin/egrep -iv 'umask[[:space:]]*077' | /usr/bin/wc -l` -ne 0",
+    command => "/bin/sed -i -r 's/(umask)([ \t]*)[0-9]+/umask $umask/gi' /etc/bashrc",
+    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/bashrc | /bin/egrep -iv 'umask[[:space:]]*$umask' | /usr/bin/wc -l` -ne 0",
   }
   #RHEL-06-000343
   exec { 'Ensure the Default C Shell Umask is Set Correctly':
-    command => "/bin/sed -i -r 's/(umask)([ \t]*)[0-9]+/umask 077/gi' /etc/csh.cshrc",
-    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/csh.cshrc | /bin/egrep -iv 'umask[[:space:]]*077' | /usr/bin/wc -l` -ne 0",
+    command => "/bin/sed -i -r 's/(umask)([ \t]*)[0-9]+/umask $umask/gi' /etc/csh.cshrc",
+    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/csh.cshrc | /bin/egrep -iv 'umask[[:space:]]*$umask' | /usr/bin/wc -l` -ne 0",
   }
   #RHEL-06-000344 
   exec { 'Replace /etc/profile umask':
-    command => "/bin/sed -i -r 's/(umask)([ \t]*)[0-9]+/umask 077/gi' /etc/profile",
-    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/profile | /bin/egrep -iv 'umask[[:space:]]*077' | /usr/bin/wc -l` -ne 0",
+    command => "/bin/sed -i -r 's/(umask)([ \t]*)[0-9]+/umask $umask/gi' /etc/profile",
+    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/profile | /bin/egrep -iv 'umask[[:space:]]*$umask' | /usr/bin/wc -l` -ne 0",
   }
   #RHEL-06-000345 
   exec { 'Replace /etc/login.defs umask':
-    command => "/bin/sed -i -r 's/(UMASK)([ \t]*)[0-9]+/UMASK 077/gi' /etc/login.defs",
-    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/login.defs | /bin/egrep -iv 'umask[[:space:]]*077' | /usr/bin/wc -l` -ne 0",
+    command => "/bin/sed -i -r 's/(UMASK)([ \t]*)[0-9]+/UMASK $umask/gi' /etc/login.defs",
+    onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/login.defs | /bin/egrep -iv 'umask[[:space:]]*$umask' | /usr/bin/wc -l` -ne 0",
   }
   # RHEL-06-000032
   exec { 'Verify Only Root Has UID 0':
