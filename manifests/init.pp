@@ -21,7 +21,7 @@
 #  None
 ############################################################
 class accounts (
- $umask = '0027'
+ $umask = '0077'
 ){
   #RHEL-06-000027, RHEL-06-000028
   augeas { 'Restrict Virtual Console and Serial Port Root Logins':
