@@ -91,7 +91,7 @@ class accounts (
   # CCE-27031-4
   file_line { 'functions umask':
     path  => '/etc/init.d/functions',
-    line  => "umask $umask",
+    line  => "umask $functionsumask",
     match => '^umask',
   }
 
