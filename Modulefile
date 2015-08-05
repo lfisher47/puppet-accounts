@@ -1,5 +1,5 @@
 name 'lfisher47-accounts'
-version '0.0.2'
+version '0.0.3'
 author 'lfisher47'
 summary 'Accounts config STIG rule enforcement'
 description 'Accounts config STIG rule enforcement'
