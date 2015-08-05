@@ -23,6 +23,7 @@
 class accounts (
  $verify = true,
  $umask = '0077',
+ $functionsumask = '0027',
 ){
   #RHEL-06-000027, RHEL-06-000028
   augeas { 'Restrict Virtual Console and Serial Port Root Logins':
@@ -86,4 +87,12 @@ class accounts (
     logoutput   => true,
     refreshonly => true,
   }
+
+  # CCE-27031-4
+  file_line { 'functions umask':
+    path  => '/etc/init.d/functions',
+    line  => "umask $umask",
+    match => '^umask',
+  }
+
 }
