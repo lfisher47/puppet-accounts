@@ -21,7 +21,8 @@
 #  None
 ############################################################
 class accounts (
- $umask = '0077'
+ $verify = true,
+ $umask = '0077',
 ){
   #RHEL-06-000027, RHEL-06-000028
   augeas { 'Restrict Virtual Console and Serial Port Root Logins':
@@ -54,17 +55,35 @@ class accounts (
     command => "/bin/sed -i -r 's/(UMASK)([ \t]*)[0-9]+/UMASK $umask/gi' /etc/login.defs",
     onlyif  => "/usr/bin/test `/bin/egrep -i 'umask[[:space:]]*[0-9]+' /etc/login.defs | /bin/egrep -iv 'umask[[:space:]]*$umask' | /usr/bin/wc -l` -ne 0",
   }
-  # RHEL-06-000032
-  exec { 'Verify Only Root Has UID 0':
-    command   => "/bin/awk -F: '(\$3 == \"0\" && \$1 !=\"root\") {print}' /etc/passwd",
-    user      => 'root',
-    logoutput => true,
+  if $verify {
+    # RHEL-06-000032
+    exec { 'Verify Only Root Has UID 0':
+      command   => "/bin/awk -F: '(\$3 == \"0\" && \$1 !=\"root\") {print}' /etc/passwd",
+      user      => 'root',
+      logoutput => true,
+    }
+    #RHEL-06-000029
+    exec { 'Verify No System or Local User Accounts Have Empty Password Fields':
+      command   => "/bin/awk -F: '(\$2 == \"\") {print}' /etc/shadow",
+      user      => 'root',
+      logoutput => true,
+    }
   }
 
-  #RHEL-06-000029
-  exec { 'Verify No System or Local User Accounts Have Empty Password Fields':
-    command   => "/bin/awk -F: '(\$2 == \"\") {print}' /etc/shadow",
-    user      => 'root',
-    logoutput => true,
+  #if using pam_oddjob_mkhomedir - we need to put the umask in the conf file
+  #will break the oddjob file if somehow there was no match line
+  file_line { 'Oddjob homedir umask':
+    path     => '/etc/oddjobd.conf.d/oddjobd-mkhomedir.conf',
+    line     => "<helper exec=\"/usr/libexec/oddjob/mkhomedir -u $umask\"",
+    match    => 'exec="/usr/libexec/oddjob/mkhomedir',
+    multiple => true,
+    notify   => Exec[ 'Restart oddjobd' ],
+  }
+
+  #Restart oddjob only if running to pick up config change.
+  exec { 'Restart oddjobd':
+    command     => '/sbin/service oddjobd status; if [ $? == 0 ]; then /sbin/service oddjobd restart; fi',
+    logoutput   => true,
+    refreshonly => true,
   }
 }
